@@ -10,6 +10,16 @@ if [ ! -d /dev/snd ]; then
     exit 1
 fi
 
+XVFB_DISPLAY=:${INSTANCE_ID:-1}
+Xvfb $XVFB_DISPLAY -screen 0 1024x768x24 +extension GLX +render -noreset &
+XVFB_PID=$!
+
+export DISPLAY=$XVFB_DISPLAY
+
+pulseaudio --start
+
+glxinfo | grep "OpenGL"
+
 python3 -m venv /opt/melee/venv_$INSTANCE_ID
 source /opt/melee/venv_$INSTANCE_ID/bin/activate
 pip install melee
@@ -21,6 +31,8 @@ cleanup() {
     echo "Cleaning up..."
     deactivate
     rm -rf /opt/melee/venv_$INSTANCE_ID
+    kill $XVFB_PID
+    pulseaudio --kill
 }
 
 trap cleanup EXIT

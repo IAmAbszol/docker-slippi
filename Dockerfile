@@ -44,7 +44,8 @@ RUN apt-get update && apt-get install -y \
     libxcomposite1 \
     libxdamage1 \
     libxrandr2 \
-    alsa-utils
+    alsa-utils \
+    pulseaudio
 
 RUN wget https://github.com/project-slippi/Ishiiruka/releases/download/v3.4.0/FM-Slippi-3.4.0-Linux.zip -O /tmp/FM-Slippi-3.4.0-Linux.zip && \
     unzip /tmp/FM-Slippi-3.4.0-Linux.zip -d /opt/slippi && \

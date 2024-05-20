@@ -1,4 +1,5 @@
 import melee
+import os
 import time
 
 dolphin_path = "/opt/slippi-extracted/AppRun"
@@ -25,8 +26,7 @@ controller_2.connect()
 while True:
     gamestate = console.step()
     if gamestate.menu_state in [melee.Menu.IN_GAME, melee.Menu.SUDDEN_DEATH]:
-        with open('/opt/melee/test.txt', 'a') as fd:
-            fd.write(f'{gamestate.frame}')
+        pass
     else:
         melee.MenuHelper.menu_helper_simple(gamestate,
                                             controller_1,
