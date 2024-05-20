@@ -1,0 +1,59 @@
+FROM nvidia/cuda:12.4.1-cudnn-devel-ubuntu22.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && apt-get install -y \
+    sudo \
+    wget \
+    curl \
+    xz-utils \
+    libfuse2 \
+    libusb-1.0-0 \
+    libxrandr2 \
+    libxinerama1 \
+    libxcursor1 \
+    libxi6 \
+    libglu1-mesa \
+    libglib2.0-0 \
+    libgtk2.0-0 \
+    libsm6 \
+    libxext6 \
+    libegl1-mesa \
+    libdbus-1-3 \
+    libxss1 \
+    libxtst6 \
+    libnss3 \
+    libasound2 \
+    libpulse0 \
+    libudev1 \
+    libgbm1 \
+    libgl1-mesa-glx \
+    xvfb \
+    mesa-utils \
+    python3 \
+    python3-pip \
+    python3-venv \
+    git \
+    unzip \
+    libatk-bridge2.0-0 \
+    libgtk-3-0 \
+    libatk1.0-0 \
+    libgdk-pixbuf2.0-0 \
+    libpango-1.0-0 \
+    libcairo2 \
+    libxcomposite1 \
+    libxdamage1 \
+    libxrandr2 \
+    alsa-utils
+
+RUN wget https://github.com/project-slippi/Ishiiruka/releases/download/v3.4.0/FM-Slippi-3.4.0-Linux.zip -O /tmp/FM-Slippi-3.4.0-Linux.zip && \
+    unzip /tmp/FM-Slippi-3.4.0-Linux.zip -d /opt/slippi && \
+    chmod +x /opt/slippi/Slippi_Online-x86_64.AppImage && \
+    cd /opt/slippi && \
+    ./Slippi_Online-x86_64.AppImage --appimage-extract && \
+    mv squashfs-root /opt/slippi-extracted && \
+    wget https://raw.githubusercontent.com/altf4/slippi-ssbm-asm/libmelee/Output/Netplay/GALE01r2.ini -O /opt/slippi-extracted/usr/bin/Sys/GameSettings/GALE01r2.ini && \
+    mkdir -p /root/.config/SlippiOnline
+
+CMD ["/opt/slippi-extracted/AppRun"]
+
