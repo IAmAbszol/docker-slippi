@@ -7,11 +7,10 @@ iso_path = "/opt/melee/Melee.iso"
 
 console = melee.Console(
     path=dolphin_path,
-    tmp_home_directory=True,
-    copy_home_directory=True,
-    setup_gecko_codes=True,
-    fullscreen=False,
-    disable_audio=True
+    gfx_backend="Null",
+    disable_audio=True,
+    use_exi_inputs=True,
+    enable_ffw=True,
 )
 
 controller_1 = melee.Controller(console=console, port=1, type=melee.ControllerType.STANDARD)

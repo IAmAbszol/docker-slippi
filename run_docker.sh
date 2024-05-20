@@ -8,35 +8,39 @@ remove_existing_containers() {
     fi
 }
 
-cleanup_containers() {
-    echo "Cleaning up containers..."
+cleanup() {
+    echo "Cleaning up..."
+    xhost -local:root
     remove_existing_containers
 }
 
-trap cleanup_containers EXIT
+trap cleanup EXIT
+
+xhost +local:root
+
+CURRENT_DISPLAY=$(echo $DISPLAY | sed 's/[^0-9]*//g')
 
 container_ids=()
 
-for i in {1..20}
+for i in {1..10}
 do
     INSTANCE_ID=$i
-    container_id=$(docker run --gpus all --rm -d \
+    echo "Starting container with ID: slippi-emulation-$INSTANCE_ID"
+    docker run --gpus all --rm \
         --name slippi-emulation-$INSTANCE_ID \
         --device /dev/snd \
         -e INSTANCE_ID=$INSTANCE_ID \
+        -v /tmp/.X11-unix:/tmp/.X11-unix \
         -v $(pwd):/opt/melee \
-        slippi-emulator /opt/melee/setup.sh)
-    container_ids+=($container_id)
-    echo "Started container with ID: $container_id"
+        slippi-emulator > /dev/null &
+    container_ids+=($!)
 done
 
 echo "Waiting for containers to stop..."
-for container_id in "${container_ids[@]}"
+for pid in "${container_ids[@]}"
 do
-    while [ "$(docker ps -q -f id=$container_id)" ]; do
-        sleep 1
-    done
-    echo "Container $container_id has stopped."
+    wait $pid
+    echo "Container process $pid has stopped."
 done
 
-cleanup_containers
+cleanup

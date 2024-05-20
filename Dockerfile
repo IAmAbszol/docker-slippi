@@ -2,6 +2,7 @@ FROM nvidia/cuda:12.4.1-cudnn-devel-ubuntu22.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 
+# Install dependencies
 RUN apt-get update && apt-get install -y \
     sudo \
     wget \
@@ -47,14 +48,23 @@ RUN apt-get update && apt-get install -y \
     alsa-utils \
     pulseaudio
 
-RUN wget https://github.com/project-slippi/Ishiiruka/releases/download/v3.4.0/FM-Slippi-3.4.0-Linux.zip -O /tmp/FM-Slippi-3.4.0-Linux.zip && \
-    unzip /tmp/FM-Slippi-3.4.0-Linux.zip -d /opt/slippi && \
-    chmod +x /opt/slippi/Slippi_Online-x86_64.AppImage && \
+# Setup vladfi1 Slippi
+RUN mkdir -p /opt/slippi/ && \
+    wget --no-check-certificate 'https://docs.google.com/uc?export=download&id=1I_GZz6Xtll2Sgy4QcOQbWK0IcQKdsF5X' -O /opt/slippi/Slippi_EXI_AI.AppImage && \
     cd /opt/slippi && \
-    ./Slippi_Online-x86_64.AppImage --appimage-extract && \
+    chmod +x ./Slippi_EXI_AI.AppImage && \
+    ./Slippi_EXI_AI.AppImage --appimage-extract && \
     mv squashfs-root /opt/slippi-extracted && \
-    wget https://raw.githubusercontent.com/altf4/slippi-ssbm-asm/libmelee/Output/Netplay/GALE01r2.ini -O /opt/slippi-extracted/usr/bin/Sys/GameSettings/GALE01r2.ini && \
-    mkdir -p /root/.config/SlippiOnline
+    mkdir -p /root/.config/SlippiOnline/
 
-CMD ["/opt/slippi-extracted/AppRun"]
+# Create and activate virtual environment, install libmelee
+RUN python3 -m venv /opt/meleeenv && \
+    . /opt/meleeenv/bin/activate && \
+    python3 -m pip install git+https://github.com/vladfi1/libmelee.git
 
+# Set the virtual environment as the default environment
+ENV VIRTUAL_ENV=/opt/meleeenv
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+
+# Default command to run your application
+CMD ["python3", "/opt/melee/run.py"]
