@@ -20,9 +20,10 @@ Example: Ganondorf Melee AI is capable of Wavedash + Jab while CC'ing, common te
 
 ## Setup
 
-Nothing! Simply put the container runs Slippi directly from the container, however we need to modify our scripts accordingly. The base scripts used in this repository are subject to change but the callstacks are all the same.
+Nothing! Simply put the container runs Slippi directly from the container, however we need to modify our scripts accordingly. The base scripts used in this repository are subject to change but the callstacks are all the same. Run `./build_docker.sh` to build the docker containers for training & testing purposes.
 
-* **run_docker.sh**: Runs the Docker container by running each container in a detached state, cleanup at the end of execution.
-* **setup.sh**: Script passed to the container to run, mounted in /opt/melee by **run_docker.sh**. Goal for setup.sh is to provide the base environment setup for **run.py** to execute.
-* **run.py**: Main running script for melee.
+## Examples
+
+* **run_slippi.sh**: Runs Slippi for visual evaluation of two models. Controller throughput might be viable however not guaranteed.
+* **run_headless.sh**: Runs Slippi in headless mode. Concept should be used in a framework to control headless emulated environment.
 

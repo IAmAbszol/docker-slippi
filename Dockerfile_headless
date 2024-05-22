@@ -2,7 +2,6 @@ FROM nvidia/cuda:12.4.1-cudnn-devel-ubuntu22.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Install dependencies
 RUN apt-get update && apt-get install -y \
     sudo \
     wget \
@@ -48,7 +47,6 @@ RUN apt-get update && apt-get install -y \
     alsa-utils \
     pulseaudio
 
-# Setup vladfi1 Slippi
 RUN mkdir -p /opt/slippi/ && \
     wget --no-check-certificate 'https://docs.google.com/uc?export=download&id=1I_GZz6Xtll2Sgy4QcOQbWK0IcQKdsF5X' -O /opt/slippi/Slippi_EXI_AI.AppImage && \
     cd /opt/slippi && \
@@ -57,14 +55,11 @@ RUN mkdir -p /opt/slippi/ && \
     mv squashfs-root /opt/slippi-extracted && \
     mkdir -p /root/.config/SlippiOnline/
 
-# Create and activate virtual environment, install libmelee
 RUN python3 -m venv /opt/meleeenv && \
     . /opt/meleeenv/bin/activate && \
     python3 -m pip install git+https://github.com/vladfi1/libmelee.git
 
-# Set the virtual environment as the default environment
 ENV VIRTUAL_ENV=/opt/meleeenv
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
-# Default command to run your application
-CMD ["python3", "/opt/melee/run.py"]
+CMD ["/bin/echo", "Provide command for headless container."]
